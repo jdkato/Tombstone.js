@@ -1,0 +1,30 @@
+{
+  "name": "Tombstone.js",
+  "version": "0.0.0",
+  "description": "A library for propositional logic proof-checking",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jdkato/Tombstone.js.git"
+  },
+  "keywords": [
+    "logic",
+    "propositional",
+    "calculus",
+    "proof"
+  ],
+  "author": "Joseph Kato",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jdkato/Tombstone.js/issues"
+  },
+  "homepage": "https://github.com/jdkato/Tombstone.js",
+  "devDependencies": {
+    "mocha": "^2.2.5"
+  },
+  "dependencies": {
+  }
+}

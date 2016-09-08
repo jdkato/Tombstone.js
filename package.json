@@ -4,7 +4,7 @@
   "description": "A library for propositional logic proof-checking",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "standard && mocha"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/jdkato/Tombstone.js",
   "devDependencies": {
+    "standard": "*",
     "mocha": "^2.2.5"
   },
   "dependencies": {

@@ -1,2 +1,6 @@
 # Tombstone.js
-:pencil: A JavaScript library for propositional logic proof-checking.
+
+[![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+
+
+

@@ -215,5 +215,39 @@ describe('Statement', function () {
       out = statement.evaluate(str, {'P': false, 'Q': false})
       assert.equal(out, true)
     })
+
+    it('P <-> Q', function () {
+      var out = false
+      var str = 'P <-> Q'
+
+      out = statement.evaluate(str, {'P': true, 'Q': true})
+      assert.equal(out, true)
+
+      out = statement.evaluate(str, {'P': true, 'Q': false})
+      assert.equal(out, false)
+
+      out = statement.evaluate(str, {'P': false, 'Q': true})
+      assert.equal(out, false)
+
+      out = statement.evaluate(str, {'P': false, 'Q': false})
+      assert.equal(out, true)
+    })
+
+    it('~P || ~Q', function () {
+      var out = false
+      var str = '~P || ~Q'
+
+      out = statement.evaluate(str, {'P': true, 'Q': true})
+      assert.equal(out, false)
+
+      out = statement.evaluate(str, {'P': true, 'Q': false})
+      assert.equal(out, true)
+
+      out = statement.evaluate(str, {'P': false, 'Q': true})
+      assert.equal(out, true)
+
+      out = statement.evaluate(str, {'P': false, 'Q': false})
+      assert.equal(out, true)
+    })
   })
 })

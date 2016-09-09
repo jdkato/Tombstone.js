@@ -249,5 +249,51 @@ describe('Statement', function () {
       out = statement.evaluate(str, {'P': false, 'Q': false})
       assert.equal(out, true)
     })
+
+    it('P & (Q || R)', function () {
+      var out = false
+      var str = 'P & (Q || R)'
+
+      out = statement.evaluate(str, {'P': true, 'Q': true, 'R': true})
+      assert.equal(out, true)
+
+      out = statement.evaluate(str, {'P': true, 'Q': true, 'R': false})
+      assert.equal(out, true)
+
+      out = statement.evaluate(str, {'P': true, 'Q': false, 'R': true})
+      assert.equal(out, true)
+
+      out = statement.evaluate(str, {'P': true, 'Q': false, 'R': false})
+      assert.equal(out, false)
+
+      out = statement.evaluate(str, {'P': false, 'Q': true, 'R': true})
+      assert.equal(out, false)
+
+      out = statement.evaluate(str, {'P': false, 'Q': true, 'R': false})
+      assert.equal(out, false)
+
+      out = statement.evaluate(str, {'P': false, 'Q': false, 'R': true})
+      assert.equal(out, false)
+
+      out = statement.evaluate(str, {'P': false, 'Q': false, 'R': false})
+      assert.equal(out, false)
+    })
+
+    it('~(~R & P)', function () {
+      var out = false
+      var str = '~(~R & P)'
+
+      out = statement.evaluate(str, {'P': true, 'R': true})
+      assert.equal(out, true)
+
+      out = statement.evaluate(str, {'P': true, 'R': false})
+      assert.equal(out, false)
+
+      out = statement.evaluate(str, {'P': false, 'R': true})
+      assert.equal(out, true)
+
+      out = statement.evaluate(str, {'P': false, 'R': false})
+      assert.equal(out, true)
+    })
   })
 })

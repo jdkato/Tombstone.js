@@ -3,6 +3,33 @@ var statement = require('../lib/statement')
 var assert = require('assert')
 
 describe('Statement', function () {
+  describe('#checkWellFormed', function () {
+    it('(P -> Q => unbalanced parentheses', function () {
+      var error = statement.checkWellFormed('(P -> Q')
+      assert.equal(error, 'unbalanced parentheses!')
+    })
+
+    it('P -> & => missing operand', function () {
+      var error = statement.checkWellFormed('P -> &')
+      assert.equal(error, 'missing operand!')
+    })
+
+    it('&& => double operators', function () {
+      var error = statement.checkWellFormed('&&')
+      assert.equal(error, 'double operators!')
+    })
+
+    it('A || (~ & B) => missing operand', function () {
+      var error = statement.checkWellFormed('A || (~ & B)')
+      assert.equal(error, 'missing operand!')
+    })
+
+    it('(A || (~ & B) => unbalanced parentheses', function () {
+      var error = statement.checkWellFormed('(A || (~ & B)')
+      assert.equal(error, 'unbalanced parentheses!')
+    })
+  })
+
   describe('#evaluate', function () {
     it('(P <-> Q) <-> ((P || R) -> (~Q -> R))', function () {
       var out = false
@@ -293,6 +320,35 @@ describe('Statement', function () {
       assert.equal(out, true)
 
       out = statement.evaluate(str, {'P': false, 'R': false})
+      assert.equal(out, true)
+    })
+
+    it('(P & Q) || (R -> Q)', function () {
+      var out = false
+      var str = '(P & Q) || (R -> Q)'
+
+      out = statement.evaluate(str, {'P': true, 'Q': true, 'R': true})
+      assert.equal(out, true)
+
+      out = statement.evaluate(str, {'P': true, 'Q': true, 'R': false})
+      assert.equal(out, true)
+
+      out = statement.evaluate(str, {'P': true, 'Q': false, 'R': true})
+      assert.equal(out, false)
+
+      out = statement.evaluate(str, {'P': true, 'Q': false, 'R': false})
+      assert.equal(out, true)
+
+      out = statement.evaluate(str, {'P': false, 'Q': true, 'R': true})
+      assert.equal(out, true)
+
+      out = statement.evaluate(str, {'P': false, 'Q': true, 'R': false})
+      assert.equal(out, true)
+
+      out = statement.evaluate(str, {'P': false, 'Q': false, 'R': true})
+      assert.equal(out, false)
+
+      out = statement.evaluate(str, {'P': false, 'Q': false, 'R': false})
       assert.equal(out, true)
     })
   })

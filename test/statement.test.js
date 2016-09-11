@@ -19,9 +19,9 @@ describe('Statement', function () {
       assert.equal(error, 'double operators!')
     })
 
-    it('A || (~ & B) => missing operand', function () {
-      var error = statement.checkWellFormed('A || (~ & B)')
-      assert.equal(error, 'missing operand!')
+    it('A | (~A & B) => unknown symbol!', function () {
+      var error = statement.checkWellFormed('A | (~A & B)')
+      assert.equal(error, 'unknown symbol!')
     })
 
     it('(A || (~ & B) => unbalanced parentheses', function () {

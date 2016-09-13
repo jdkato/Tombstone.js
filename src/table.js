@@ -84,7 +84,7 @@ function tableToMarkdown (table) {
   var row = []
   var header = table['variables'].slice()
 
-  header.push(table['statement'])
+  header.push(table['statement'].replace(/\|/g, '&#124;'))
   rows.push(header)
   for (var i = 0; i < table['rows'].length; ++i) {
     row = []
@@ -117,4 +117,5 @@ function makeTruthTable (s, type) {
   }
 }
 
-module.exports.truthTable = makeTruthTable
+// module.exports.truthTable = makeTruthTable
+export default makeTruthTable

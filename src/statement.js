@@ -7,7 +7,6 @@ class Statement {
     }
     this.statement = statement
     this.variables = extractvariables(this.statement)
-    this.symbols = extractSymbols(this.statement)
     this.symbolsRPN = convertToRPN(this.symbols)
     this.tree = RPNToTree(this.symbolsRPN)
   }

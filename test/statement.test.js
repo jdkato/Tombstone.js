@@ -4,39 +4,39 @@ import Statement from '../src/statement'
 
 describe('Statement', function () {
   describe('#checkWellFormed', function () {
-    it('(P -> Q => unbalanced parentheses', function () {
+    it('should throw an "unbalanced parentheses" exception', function () {
       let statement = function () { new Statement('(P -> Q') }
       expect(statement).to.throw('unbalanced parentheses!')
     })
 
-    it('P -> & => missing operand', function () {
+    it('should throw a "missing operand" exception', function () {
       let statement = function () { new Statement('P -> &') }
       expect(statement).to.throw('double operators!')
     })
 
-    it('&& => double operators', function () {
+    it('should throw a "double operators" exception', function () {
       let statement = function () { new Statement('&&') }
       expect(statement).to.throw('double operators!')
     })
 
-    it('A | (~A & B) => unknown symbol!', function () {
+    it('should throw an "unknown symbol" exception', function () {
       let statement = function () { new Statement('A | (~A & B)') }
       expect(statement).to.throw('unknown symbol!')
     })
 
-    it('(A || (~ & B) => unbalanced parentheses', function () {
+    it('should throw an "unbalanced parentheses" exception', function () {
       let statement = function () { new Statement('(A || (~ & B)') }
       expect(statement).to.throw('unbalanced parentheses!')
     })
 
-    it('() => no symbols', function () {
+    it('should throw a "no symbols" exception', function () {
       let statement = function () { new Statement('()') }
       expect(statement).to.throw('no symbols!')
     })
   })
 
   describe('#evaluate', function () {
-    it('(P <-> Q) <-> ((P || R) -> (~Q -> R))', function () {
+    it('should evaluate (P <-> Q) <-> ((P || R) -> (~Q -> R))', function () {
       let out = false
       let statement = new Statement('(P <-> Q) <-> ((P || R) -> (~Q -> R))')
 
@@ -65,7 +65,7 @@ describe('Statement', function () {
       assert.equal(out, true)
     })
 
-    it('(P <-> ~Q) <-> (~P <-> ~Q)', function () {
+    it('should evaluate (P <-> ~Q) <-> (~P <-> ~Q)', function () {
       let out = false
       let statement = new Statement('(P <-> ~Q) <-> (~P <-> ~Q)')
 
@@ -82,7 +82,7 @@ describe('Statement', function () {
       assert.equal(out, false)
     })
 
-    it('~(P & Q) || P', function () {
+    it('should evaluate ~(P & Q) || P', function () {
       let out = false
       let statement = new Statement('~(P & Q) || P')
 
@@ -99,7 +99,7 @@ describe('Statement', function () {
       assert.equal(out, true)
     })
 
-    it('~(P -> Q) -> P', function () {
+    it('should evaluate ~(P -> Q) -> P', function () {
       let out = false
       let statement = new Statement('~(P -> Q) -> P')
 
@@ -116,7 +116,7 @@ describe('Statement', function () {
       assert.equal(out, true)
     })
 
-    it('(P || Q) || (~P & Q)', function () {
+    it('should evaluate (P || Q) || (~P & Q)', function () {
       let out = false
       let statement = new Statement('(P || Q) || (~P & Q)')
 
@@ -133,7 +133,7 @@ describe('Statement', function () {
       assert.equal(out, false)
     })
 
-    it('Q & ~Q', function () {
+    it('should evaluate Q & ~Q', function () {
       let out = false
       let statement = new Statement('Q & ~Q')
 
@@ -144,7 +144,7 @@ describe('Statement', function () {
       assert.equal(out, false)
     })
 
-    it('(Q)', function () {
+    it('should evaluate (Q)', function () {
       // TODO: detect this case as malformed
       let out = false
       let statement = new Statement('(Q)')
@@ -156,7 +156,7 @@ describe('Statement', function () {
       assert.equal(out, false)
     })
 
-    it('(P) -> Q', function () {
+    it('should evaluate (P) -> Q', function () {
       // TODO: detect this case as malformed
       let out = false
       let statement = new Statement('(P) -> Q')
@@ -174,7 +174,7 @@ describe('Statement', function () {
       assert.equal(out, true)
     })
 
-    it('(P -> Q) || (~Q & R)', function () {
+    it('should evaluate (P -> Q) || (~Q & R)', function () {
       let out = false
       let statement = new Statement('(P -> Q) || (~Q & R)')
 
@@ -203,7 +203,7 @@ describe('Statement', function () {
       assert.equal(out, true)
     })
 
-    it('P || Q -> R || ~P', function () {
+    it('should evaluate P || Q -> R || ~P', function () {
       let out = false
       let statement = new Statement('P || Q -> R || ~P')
 
@@ -232,7 +232,7 @@ describe('Statement', function () {
       assert.equal(out, true)
     })
 
-    it('R <-> ~P || (R & Q)', function () {
+    it('should evaluate R <-> ~P || (R & Q)', function () {
       let out = false
       let statement = new Statement('R <-> ~P || (R & Q)')
 
@@ -261,7 +261,7 @@ describe('Statement', function () {
       assert.equal(out, false)
     })
 
-    it('(P & Q <-> Q) -> (Q -> P)', function () {
+    it('should evaluate (P & Q <-> Q) -> (Q -> P)', function () {
       let out = false
       let statement = new Statement('(P & Q <-> Q) -> (Q -> P)')
 
@@ -278,7 +278,7 @@ describe('Statement', function () {
       assert.equal(out, true)
     })
 
-    it('P <-> Q', function () {
+    it('should evaluate P <-> Q', function () {
       let out = false
       let statement = new Statement('P <-> Q')
 
@@ -295,7 +295,7 @@ describe('Statement', function () {
       assert.equal(out, true)
     })
 
-    it('~P || ~Q', function () {
+    it('should evaluate ~P || ~Q', function () {
       let out = false
       let statement = new Statement('~P || ~Q')
 
@@ -312,7 +312,7 @@ describe('Statement', function () {
       assert.equal(out, true)
     })
 
-    it('P & (Q || R)', function () {
+    it('should evaluate P & (Q || R)', function () {
       let out = false
       let statement = new Statement('P & (Q || R)')
 
@@ -341,7 +341,7 @@ describe('Statement', function () {
       assert.equal(out, false)
     })
 
-    it('~(~R & P)', function () {
+    it('should evaluate ~(~R & P)', function () {
       let out = false
       let statement = new Statement('~(~R & P)')
 
@@ -358,7 +358,7 @@ describe('Statement', function () {
       assert.equal(out, true)
     })
 
-    it('(P & Q) || (R -> Q)', function () {
+    it('should evaluate (P & Q) || (R -> Q)', function () {
       let out = false
       let statement = new Statement('(P & Q) || (R -> Q)')
 

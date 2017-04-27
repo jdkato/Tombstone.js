@@ -1,0 +1,26 @@
+{
+	"build_systems":
+	[
+		{
+			"cmd": ["npm", "test"],
+			"name": "Tombstone: Run Unit Tests",
+			"working_dir": "${project_path}"
+		},
+		{
+			"cmd": ["npm", "run", "build"],
+			"name": "Tombstone: Build",
+			"working_dir": "${project_path}"
+		},
+        {
+            "cmd": ["npm", "run", "dev"],
+            "name": "Tombstone: Dev",
+            "working_dir": "${project_path}"
+        }
+	],
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	]
+}

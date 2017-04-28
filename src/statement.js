@@ -42,7 +42,7 @@ class Statement {
     return this.symbols
   }
 
-  table() {
+  table () {
     return table(this, 'Markdown')
   }
 }

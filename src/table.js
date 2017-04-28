@@ -1,4 +1,3 @@
-var statement = require('./statement')
 var mdTable = require('markdown-table')
 
 /**
@@ -54,19 +53,18 @@ function getCases (variables) {
 /**
  * Convert a statement into an object representing the structure of a table.
  *
- * @param   {String} s - The statement to be converted.
+ * @param   {Object} s - The statement to be converted.
  *
  * @returns {Object} - The table representation.
  */
 function statementToTable (s) {
   var table = {}
-  var variables = statement.variables(s)
 
-  table['statement'] = s
-  table['variables'] = variables
-  table['rows'] = getCases(variables)
+  table['statement'] = s.statement
+  table['variables'] = s.variables
+  table['rows'] = getCases(table['variables'])
   for (var i = 0; i < table['rows'].length; ++i) {
-    table['rows'][i]['eval'] = statement.evaluate(s, table['rows'][i])
+    table['rows'][i]['eval'] = s.evaluate(table['rows'][i])
   }
 
   return table

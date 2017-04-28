@@ -1,3 +1,5 @@
+var table = require('./table')
+
 class Statement {
   constructor (statement) {
     this.symbols = extractSymbols(statement)
@@ -38,6 +40,10 @@ class Statement {
 
   symbols () {
     return this.symbols
+  }
+
+  table() {
+    return table(this, 'Markdown')
   }
 }
 

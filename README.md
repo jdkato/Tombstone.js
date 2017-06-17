@@ -8,7 +8,7 @@ Tombstone.js is a JavaScript propositional logic library. See my [blog post](htt
 
 Download Tombstone.js from the [releases page](https://github.com/jdkato/Tombstone.js/releases) and include it:
 
-```js
+```html
 <script type="text/javascript" src="tombstone.min.js"></script>
 ```
 

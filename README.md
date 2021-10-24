@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/jdkato/Tombstone.js.svg?branch=master)](https://travis-ci.org/jdkato/Tombstone.js) [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/) [![codebeat badge](https://codebeat.co/badges/53242506-6b71-485b-9688-93d78d8e9ca2)](https://codebeat.co/projects/github-com-jdkato-tombstone-js-master) [![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg?maxAge=2592000)](https://github.com/jdkato/Tombstone.js/blob/master/LICENSE.txt)
 
-Tombstone.js is a JavaScript propositional logic library. See my [blog post](https://jdkato.github.io/2016/09/09/tombstonejs-a-propositional-logic-library.html) for more information.
+Tombstone.js is a JavaScript propositional logic library. See my [blog post](https://the57thpick.com/posts/tombstone/) for more information.
 
 ## Usage
 

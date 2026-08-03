@@ -194,7 +194,11 @@ function extractvariables (statement) {
   let variables = []
 
   for (let symbol of symbols) {
-    if (symbol.match(/^[a-z]+$/i)) {
+    // Distinct variables, in order of first appearance. Without the
+    // membership check a formula that mentions a variable twice — which any
+    // interesting one does — gets a duplicate column in its truth table and
+    // 2^occurrences rows instead of 2^variables.
+    if (symbol.match(/^[a-z]+$/i) && variables.indexOf(symbol) === -1) {
       variables.push(symbol)
     }
   }

@@ -406,4 +406,26 @@ describe('Statement', function () {
       assert.equal(root.children[1].children[0].name, '~')
     })
   })
+
+  describe('#variables', function () {
+    it('should list each variable once, in order of first appearance', function () {
+      // Without a membership check a repeated variable got its own column and
+      // doubled the row count: the contrapositive came out at 16 rows.
+      assert.deepEqual(new Statement('(P -> Q) <-> (~Q -> ~P)').variables, ['P', 'Q'])
+      assert.deepEqual(new Statement('Q & P').variables, ['Q', 'P'])
+    })
+
+    it('should give a truth table 2^variables rows', function () {
+      const rows = new Statement('(P -> Q) <-> (~Q -> ~P)').table().split('\n')
+      assert.equal(rows.length - 2, 4)
+      // …and it is a tautology, so the result column is true throughout. Only
+      // the last column: the variable columns are false half the time by
+      // definition.
+      const results = rows.slice(2).map(function (r) {
+        const cells = r.split('|').map(function (c) { return c.trim() }).filter(Boolean)
+        return cells[cells.length - 1]
+      })
+      assert.deepEqual(results, ['true', 'true', 'true', 'true'])
+    })
+  })
 })

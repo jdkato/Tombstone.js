@@ -1,4 +1,3 @@
-
 /**
  * Get all boolean input values for n variables.
  *
@@ -32,15 +31,15 @@ function getValues (n, t) {
  *  values.
  */
 function getCases (variables) {
-  var numVars = variables.length
-  var values = getValues(numVars, [])
-  var numRows = values.length
-  var rows = []
-  var row = {}
+  const numVars = variables.length
+  const values = getValues(numVars, [])
+  const numRows = values.length
+  const rows = []
+  let row = {}
 
-  for (var i = 0; i < numRows; ++i) {
+  for (let i = 0; i < numRows; ++i) {
     row = {}
-    for (var j = 0; j < numVars; ++j) {
+    for (let j = 0; j < numVars; ++j) {
       row[variables[j]] = values[i][j]
     }
     rows.push(row)
@@ -57,13 +56,13 @@ function getCases (variables) {
  * @returns {Object} - The table representation.
  */
 function statementToTable (s) {
-  var table = {}
+  const table = {}
 
-  table['statement'] = s.statement
-  table['variables'] = s.variables
-  table['rows'] = getCases(table['variables'])
-  for (var i = 0; i < table['rows'].length; ++i) {
-    table['rows'][i]['eval'] = s.evaluate(table['rows'][i])
+  table.statement = s.statement
+  table.variables = s.variables
+  table.rows = getCases(table.variables)
+  for (let i = 0; i < table.rows.length; ++i) {
+    table.rows[i].eval = s.evaluate(table.rows[i])
   }
 
   return table
@@ -77,18 +76,18 @@ function statementToTable (s) {
  * @returns {String} The Markdown-formatted table.
  */
 function tableToMarkdown (table) {
-  var rows = []
-  var row = []
-  var header = table['variables'].slice()
+  const rows = []
+  let row = []
+  const header = table.variables.slice()
 
-  header.push(table['statement'].replace(/\|/g, '&#124;'))
+  header.push(table.statement.replace(/\|/g, '&#124;'))
   rows.push(header)
-  for (var i = 0; i < table['rows'].length; ++i) {
+  for (let i = 0; i < table.rows.length; ++i) {
     row = []
-    for (var j = 0; j < table['variables'].length; ++j) {
-      row.push(table['rows'][i][table['variables'][j]])
+    for (let j = 0; j < table.variables.length; ++j) {
+      row.push(table.rows[i][table.variables[j]])
     }
-    row.push(table['rows'][i]['eval'])
+    row.push(table.rows[i].eval)
     rows.push(row)
   }
 
@@ -142,8 +141,8 @@ function toMarkdown (rows) {
  * @returns {String} - The formatted table.
  */
 function makeTruthTable (s, type) {
-  var table = statementToTable(s)
-  var format = type.toLowerCase()
+  const table = statementToTable(s)
+  const format = type.toLowerCase()
 
   // TODO: Add support for other formats
   switch (format) {

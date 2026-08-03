@@ -52,6 +52,30 @@ In descending order of precedence:
 
 Sentence variables are single letters, `A` through `Z`.
 
+### Constants
+
+| Symbol | Name   | Value          |
+| ------ | ------ | -------------- |
+| `⊥`    | falsum | always false   |
+| `⊤`    | verum  | always true    |
+
+A constant is an operand but never a variable: it has a fixed truth value, so it
+takes no column of its own in a truth table and does not double the row count.
+
+```js
+const s = new Statement('A & ⊥')
+
+s.variables // ['A'] — the constant isn't one
+s.evaluate({ A: true }) // false
+```
+
+```
+|   A   | A & ⊥ |
+| :---: | :---: |
+|  true | false |
+| false | false |
+```
+
 ### What a Statement gives you
 
 ```js

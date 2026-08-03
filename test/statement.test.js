@@ -428,4 +428,31 @@ describe('Statement', function () {
       assert.deepEqual(results, ['true', 'true', 'true', 'true'])
     })
   })
+
+  describe('constants', function () {
+    it('should evaluate falsum as false and verum as true', function () {
+      assert.equal(new Statement('A & \u22a5').evaluate({ A: true }), false)
+      assert.equal(new Statement('A & \u22a5').evaluate({ A: false }), false)
+      assert.equal(new Statement('A || \u22a4').evaluate({ A: false }), true)
+      assert.equal(new Statement('~\u22a5').evaluate({}), true)
+    })
+
+    it('should not count a constant as a variable', function () {
+      // A constant has a fixed truth value, so it takes no column in a truth
+      // table and must not double the row count.
+      const s = new Statement('A & \u22a5')
+      assert.deepEqual(s.variables, ['A'])
+      assert.equal(s.table().split('\n').length - 2, 2)
+    })
+
+    it('should handle a formula made only of constants', function () {
+      const s = new Statement('\u22a5 || \u22a4')
+      assert.deepEqual(s.variables, [])
+      assert.equal(s.evaluate({}), true)
+    })
+
+    it('should still reject unknown symbols', function () {
+      assert.throws(function () { new Statement('A | B') }, /unknown symbol/)
+    })
+  })
 })

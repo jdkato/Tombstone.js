@@ -1,9 +1,21 @@
 import table from './table.js'
 
+/**
+ * Logical constants. Unlike a sentence variable these have a fixed truth value,
+ * so they are operands but never variables: they take no column in a truth
+ * table and do not double its rows.
+ */
+const CONSTANTS = { '\u22a5': false, '\u22a4': true }
+
+/** Anything that can stand where a proposition stands. */
+function isOperand (symbol) {
+  return /^[a-z]$/i.test(symbol) || symbol in CONSTANTS
+}
+
 class Statement {
   constructor (statement) {
     this.symbols = extractSymbols(statement)
-    let error = checkWellFormed(this.symbols)
+    const error = checkWellFormed(this.symbols)
     if (error) {
       throw new Error(error)
     }
@@ -15,10 +27,10 @@ class Statement {
 
   evaluate (values) {
     const evalReady = performSubstitution(this.symbolsRPN, values)
-    let outStack = []
+    const outStack = []
     let operands = []
 
-    for (let symbol of evalReady) {
+    for (const symbol of evalReady) {
       if (typeof symbol === 'boolean') {
         outStack.push(symbol)
       } else {
@@ -53,11 +65,11 @@ class Statement {
  */
 function convertToRPN (symbols) {
   let closingParen = false
-  let outQueue = []
-  let opStack = []
+  const outQueue = []
+  const opStack = []
 
-  for (let symbol of symbols) {
-    if (symbol.match(/^[a-z]{1}$/i)) {
+  for (const symbol of symbols) {
+    if (isOperand(symbol)) {
       outQueue.push(symbol)
     } else if (symbol === ')') {
       closingParen = false
@@ -86,7 +98,11 @@ function convertToRPN (symbols) {
  * @return {String|null} - A message if an error is found and null otherwise.
  */
 function checkWellFormed (symbols) {
-  let isOperand = /^[a-z()]{1}$/i
+  // Parentheses count as operands here only so the neighbour checks below can
+  // treat "(P" and "P)" as well-formed.
+  const operandLike = function (symbol) {
+    return isOperand(symbol) || symbol === '(' || symbol === ')'
+  }
   let opening = 0
   let closing = 0
   let symbol = null
@@ -105,7 +121,7 @@ function checkWellFormed (symbols) {
     next = symbols[i + 1] === undefined ? '' : symbols[i + 1]
     prev = symbols[i - 1] === undefined ? '' : symbols[i - 1]
     isOperator = ['~', '&', '||', '->', '<->'].includes(symbol)
-    if (!isOperator && !symbol.match(isOperand)) {
+    if (!isOperator && !operandLike(symbol)) {
       error = 'unknown symbol!'
     }
     if (symbol === '(') {
@@ -115,11 +131,11 @@ function checkWellFormed (symbols) {
     } else if (isOperator && wasOperator && symbol !== '~') {
       error = 'double operators!'
     } else if (isOperator && symbol !== '~') {
-      if (!prev.match(isOperand) || (next !== '~' && !next.match(isOperand))) {
+      if (!operandLike(prev) || (next !== '~' && !operandLike(next))) {
         error = 'missing operand!'
       }
     } else if (symbol === '~') {
-      if (!next.match(isOperand)) {
+      if (!operandLike(next)) {
         error = 'missing operand!'
       }
     }
@@ -155,9 +171,9 @@ function extractSymbols (statement) {
   let idx = 0
   let cond = null
   let bicond = null
-  let extracted = []
+  const extracted = []
 
-  for (let symbol of symbols) {
+  for (const symbol of symbols) {
     if (!symbol.match(/^[a-z]+$/i) && accepted.indexOf(symbol) < 0) {
       idx = 0
       while (idx < symbol.length) {
@@ -191,9 +207,9 @@ function extractSymbols (statement) {
  */
 function extractvariables (statement) {
   const symbols = extractSymbols(statement)
-  let variables = []
+  const variables = []
 
-  for (let symbol of symbols) {
+  for (const symbol of symbols) {
     // Distinct variables, in order of first appearance. Without the
     // membership check a formula that mentions a variable twice — which any
     // interesting one does — gets a duplicate column in its truth table and
@@ -237,11 +253,13 @@ function compareOperators (op1, op2) {
  * @returns {Array} - An array with symbols replaced by their values.
  */
 function performSubstitution (symbols, values) {
-  let prepared = []
+  const prepared = []
 
-  for (let symbol of symbols) {
+  for (const symbol of symbols) {
     if (['(', ')', '->', '&', '||', '<->', '~'].includes(symbol)) {
       prepared.push(symbol)
+    } else if (symbol in CONSTANTS) {
+      prepared.push(CONSTANTS[symbol])
     } else {
       prepared.push(values[symbol])
     }
@@ -274,29 +292,29 @@ function evaluate (operator, operands) {
 }
 
 function RPNToTree (symbols) {
-  let outStack = []
+  const outStack = []
   let right = null
   let size = 0
 
-  for (let symbol of symbols) {
-    if (symbol.match(/^[a-z]{1}$/i)) {
-      outStack.push({'name': symbol})
+  for (const symbol of symbols) {
+    if (isOperand(symbol)) {
+      outStack.push({ name: symbol })
     } else {
       right = outStack.pop()
       if (symbol === '~') {
-        outStack.push({'name': symbol, 'children': [right]})
+        outStack.push({ name: symbol, children: [right] })
       } else {
         // The stack pops right-hand operand first, so the left must be put back
         // in front of it. Emitting them in pop order reversed every binary
         // node: `P -> Q` came out as a tree reading `Q -> P`, which is a
         // different formula for every connective that isn't commutative.
-        outStack.push({'name': symbol, 'children': [outStack.pop(), right]})
+        outStack.push({ name: symbol, children: [outStack.pop(), right] })
       }
     }
     size += 1
   }
 
-  return {'tree': outStack, 'size': size}
+  return { tree: outStack, size }
 }
 
 export default Statement

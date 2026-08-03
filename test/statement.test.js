@@ -387,4 +387,23 @@ describe('Statement', function () {
       assert.equal(out, true)
     })
   })
+
+  describe('#tree', function () {
+    it('should order binary operands left-to-right', function () {
+      // The RPN stack pops the right operand first. Emitting children in pop
+      // order reversed every binary node, so `P -> Q` built a tree reading
+      // `Q -> P` — a different formula for any connective that isn't
+      // commutative.
+      const root = new Statement('P -> Q').tree.tree[0]
+      assert.equal(root.name, '->')
+      assert.deepEqual(root.children.map(function (c) { return c.name }), ['P', 'Q'])
+    })
+
+    it('should nest correctly for a compound statement', function () {
+      const root = new Statement('(P -> Q) <-> (~Q -> ~P)').tree.tree[0]
+      assert.equal(root.name, '<->')
+      assert.deepEqual(root.children[0].children.map(function (c) { return c.name }), ['P', 'Q'])
+      assert.equal(root.children[1].children[0].name, '~')
+    })
+  })
 })

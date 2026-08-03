@@ -282,7 +282,11 @@ function RPNToTree (symbols) {
       if (symbol === '~') {
         outStack.push({'name': symbol, 'children': [right]})
       } else {
-        outStack.push({'name': symbol, 'children': [right, outStack.pop()]})
+        // The stack pops right-hand operand first, so the left must be put back
+        // in front of it. Emitting them in pop order reversed every binary
+        // node: `P -> Q` came out as a tree reading `Q -> P`, which is a
+        // different formula for every connective that isn't commutative.
+        outStack.push({'name': symbol, 'children': [outStack.pop(), right]})
       }
     }
     size += 1

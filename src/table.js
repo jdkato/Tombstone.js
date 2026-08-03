@@ -1,4 +1,3 @@
-var mdTable = require('markdown-table')
 
 /**
  * Get all boolean input values for n variables.
@@ -93,7 +92,45 @@ function tableToMarkdown (table) {
     rows.push(row)
   }
 
-  return mdTable(rows, {align: 'c'})
+  return toMarkdown(rows)
+}
+
+/**
+ * Render rows as a centre-aligned Markdown table.
+ *
+ * Written out rather than pulled from `markdown-table`: it was the library's
+ * only runtime dependency, and a propositional-logic package having none at all
+ * is worth twenty lines.
+ *
+ * @param   {Array} rows - Header row first, then body rows.
+ *
+ * @returns {String} The Markdown-formatted table.
+ */
+function toMarkdown (rows) {
+  const cells = rows.map(function (row) {
+    return row.map(String)
+  })
+  const widths = cells[0].map(function (_, i) {
+    return Math.max.apply(null, cells.map(function (row) {
+      return row[i].length
+    }).concat(3))
+  })
+
+  const line = function (row) {
+    return '| ' + row.map(function (cell, i) {
+      const pad = widths[i] - cell.length
+      // Extra space goes left, matching what markdown-table produced so the
+      // output documented in the README stays byte-identical.
+      const left = Math.ceil(pad / 2)
+      return ' '.repeat(left) + cell + ' '.repeat(pad - left)
+    }).join(' | ') + ' |'
+  }
+
+  const rule = '| ' + widths.map(function (w) {
+    return ':' + '-'.repeat(w - 2) + ':'
+  }).join(' | ') + ' |'
+
+  return [line(cells[0]), rule].concat(cells.slice(1).map(line)).join('\n')
 }
 
 /**

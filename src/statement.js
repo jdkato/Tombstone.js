@@ -1,4 +1,4 @@
-var table = require('./table')
+import table from './table.js'
 
 class Statement {
   constructor (statement) {
@@ -32,14 +32,6 @@ class Statement {
     }
 
     return outStack[0]
-  }
-
-  variables () {
-    return this.variables
-  }
-
-  symbols () {
-    return this.symbols
   }
 
   table () {

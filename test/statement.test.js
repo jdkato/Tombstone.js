@@ -1,37 +1,37 @@
-import {describe, it} from 'mocha'
-import {assert, expect} from 'chai'
-import Statement from '../src/statement'
+import { describe, it } from 'node:test'
+import assert from 'node:assert/strict'
+import Statement from '../src/statement.js'
 
 describe('Statement', function () {
   describe('#checkWellFormed', function () {
     it('should throw an "unbalanced parentheses" exception', function () {
       let statement = function () { new Statement('(P -> Q') }
-      expect(statement).to.throw('unbalanced parentheses!')
+      assert.throws(statement, /unbalanced\ parentheses!/)
     })
 
     it('should throw a "missing operand" exception', function () {
       let statement = function () { new Statement('P -> &') }
-      expect(statement).to.throw('double operators!')
+      assert.throws(statement, /double\ operators!/)
     })
 
     it('should throw a "double operators" exception', function () {
       let statement = function () { new Statement('&&') }
-      expect(statement).to.throw('double operators!')
+      assert.throws(statement, /double\ operators!/)
     })
 
     it('should throw an "unknown symbol" exception', function () {
       let statement = function () { new Statement('A | (~A & B)') }
-      expect(statement).to.throw('unknown symbol!')
+      assert.throws(statement, /unknown\ symbol!/)
     })
 
     it('should throw an "unbalanced parentheses" exception', function () {
       let statement = function () { new Statement('(A || (~ & B)') }
-      expect(statement).to.throw('unbalanced parentheses!')
+      assert.throws(statement, /unbalanced\ parentheses!/)
     })
 
     it('should throw a "no symbols" exception', function () {
       let statement = function () { new Statement('()') }
-      expect(statement).to.throw('no symbols!')
+      assert.throws(statement, /no\ symbols!/)
     })
   })
 

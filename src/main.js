@@ -1,3 +1,4 @@
-import Statement from 'statement'
+import Statement from './statement.js'
 
-export {Statement}
+export { Statement }
+export default { Statement }

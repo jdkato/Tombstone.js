@@ -106,6 +106,17 @@ function checkWellFormed (symbols) {
   const operandLike = function (symbol) {
     return isOperand(symbol) || symbol === '(' || symbol === ')'
   }
+
+  // A formula ends with a variable, a constant or a closing paren, and starts
+  // with one of those or an opening paren. Two of those meeting with nothing
+  // between them means an operator is missing: "P Q" was accepted and quietly
+  // evaluated to P.
+  const endsFormula = function (symbol) {
+    return isOperand(symbol) || symbol === ')'
+  }
+  const startsFormula = function (symbol) {
+    return isOperand(symbol) || symbol === '('
+  }
   let opening = 0
   let closing = 0
   let symbol = null
@@ -126,6 +137,8 @@ function checkWellFormed (symbols) {
     isOperator = ['~', '&', '||', '->', '<->'].includes(symbol)
     if (!isOperator && !operandLike(symbol)) {
       error = 'unknown symbol!'
+    } else if (prev !== '' && endsFormula(prev) && startsFormula(symbol)) {
+      error = 'missing operator!'
     }
     if (symbol === '(') {
       opening += 1
@@ -145,7 +158,9 @@ function checkWellFormed (symbols) {
         error = 'missing operand!'
       }
     } else if (symbol === '~') {
-      if (!operandLike(next)) {
+      // Negation is unary, so what follows it either starts a formula or is
+      // another negation: double negation is well-formed and was rejected.
+      if (!startsFormula(next) && next !== '~') {
         error = 'missing operand!'
       }
     }

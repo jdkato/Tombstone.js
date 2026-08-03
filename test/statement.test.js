@@ -466,7 +466,9 @@ describe('Statement', function () {
         function () { new Statement('(P->(Q->R)))->((P&Q)->R') },
         /unbalanced parentheses/
       )
-      assert.throws(function () { new Statement(')P(') }, /unbalanced parentheses/)
+      // ")P(" is malformed several ways over — which defect is reported first
+      // is an implementation detail, so only the rejection is asserted.
+      assert.throws(function () { new Statement(')P(') }, Error)
     })
 
     it('should accept the same formula once its parens are fixed', function () {
@@ -484,6 +486,38 @@ describe('Statement', function () {
       for (const formula of bad) {
         assert.throws(function () { new Statement(formula) }, Error, formula)
       }
+    })
+  })
+
+  describe('adjacent operands', function () {
+    it('should reject two operands with no operator between them', function () {
+      // Reported in #4: "p q r s t" was accepted and evaluated to its first
+      // variable, because the validator checked for two operators in a row but
+      // never two operands.
+      assert.throws(function () { new Statement('P Q') }, /missing operator/)
+      assert.throws(function () { new Statement('p q r s t') }, /missing operator/)
+      assert.throws(function () { new Statement('(P)(Q)') }, /missing operator/)
+      assert.throws(function () { new Statement('P(Q)') }, /missing operator/)
+    })
+
+    it('should still accept parenthesised and negated formulas', function () {
+      assert.deepEqual(new Statement('(P) & (Q)').symbolsRPN, ['P', 'Q', '&'])
+      assert.deepEqual(new Statement('((P))').symbolsRPN, ['P'])
+    })
+  })
+
+  describe('double negation', function () {
+    it('should accept repeated negation', function () {
+      // ~~P is well-formed and equivalent to P; it was rejected as a missing
+      // operand because ~ only looked for something that started a formula.
+      assert.equal(new Statement('~~P').evaluate({ P: true }), true)
+      assert.equal(new Statement('~~P').evaluate({ P: false }), false)
+      assert.equal(new Statement('~~~P').evaluate({ P: true }), false)
+    })
+
+    it('should still require an operand after a negation', function () {
+      assert.throws(function () { new Statement('~') }, /missing operand/)
+      assert.throws(function () { new Statement('P ~') }, /missing operand/)
     })
   })
 })

@@ -455,4 +455,35 @@ describe('Statement', function () {
       assert.throws(function () { new Statement('A | B') }, /unknown symbol/)
     })
   })
+
+  describe('malformed input', function () {
+    it('should reject parens that balance by count but not by nesting', function () {
+      // Reported in #3. Four opens and four closes, so a totals-only check
+      // passes it, but ")))" closes one more than is open at that point. That
+      // used to reach convertToRPN, which popped an empty stack forever and
+      // died with "Invalid array length" instead of reporting bad input.
+      assert.throws(
+        function () { new Statement('(P->(Q->R)))->((P&Q)->R') },
+        /unbalanced parentheses/
+      )
+      assert.throws(function () { new Statement(')P(') }, /unbalanced parentheses/)
+    })
+
+    it('should accept the same formula once its parens are fixed', function () {
+      const s = new Statement('(P->(Q->R))->((P&Q)->R)')
+      assert.deepEqual(s.variables, ['P', 'Q', 'R'])
+      // Exportation: true for every assignment.
+      assert.ok(s.table().split('\n').slice(2).every(function (row) {
+        const cells = row.split('|').map(function (c) { return c.trim() }).filter(Boolean)
+        return cells[cells.length - 1] === 'true'
+      }))
+    })
+
+    it('should always throw an Error rather than crash', function () {
+      const bad = ['P)', '(', ')', '()', 'P &', '& P', '~', '', '   ', 'P -> -> Q', 'A | B']
+      for (const formula of bad) {
+        assert.throws(function () { new Statement(formula) }, Error, formula)
+      }
+    })
+  })
 })

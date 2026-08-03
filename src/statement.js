@@ -73,7 +73,10 @@ function convertToRPN (symbols) {
       outQueue.push(symbol)
     } else if (symbol === ')') {
       closingParen = false
-      while (!closingParen && opStack[opStack.length - 1] !== '(') {
+      // The stack-empty test is a backstop. checkWellFormed rejects mismatched
+      // nesting before this runs, but without it a bad input that ever slipped
+      // through would spin here instead of failing.
+      while (!closingParen && opStack.length > 0 && opStack[opStack.length - 1] !== '(') {
         outQueue.push(opStack.pop())
         closingParen = opStack[opStack.length - 1] === '('
       }
@@ -128,6 +131,13 @@ function checkWellFormed (symbols) {
       opening += 1
     } else if (symbol === ')') {
       closing += 1
+      // Comparing totals at the end is not enough: ")))" can balance an earlier
+      // "((" by count while closing more than is actually open here. Left
+      // unchecked that reaches convertToRPN, which then pops an empty stack
+      // forever and dies on array length rather than reporting bad input.
+      if (closing > opening) {
+        error = 'unbalanced parentheses!'
+      }
     } else if (isOperator && wasOperator && symbol !== '~') {
       error = 'double operators!'
     } else if (isOperator && symbol !== '~') {
